@@ -1,4 +1,4 @@
-package com.NingTianzhe181310419.plantsvszombies_wholeproject.domain;
+package com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.Zombies;
 
 import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.base.BaseElement;
 import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.base.Zombie;

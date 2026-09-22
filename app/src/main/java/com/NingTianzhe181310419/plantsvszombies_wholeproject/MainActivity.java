@@ -30,8 +30,8 @@ public class MainActivity extends Activity {
         director.setDeviceOrientation(CCDirector.kCCDeviceOrientationLandscapeLeft);//横屏
         director.setScreenSize(1280, 768);//用于屏幕适配
         CCScene scene = CCScene.node();//创建一个场景对象
-        //WelcomeLayer layer = new WelcomeLayer();//创建一个图层对象
-        MenuLayer layer = new MenuLayer();
+        WelcomeLayer layer = new WelcomeLayer();//创建一个图层对象
+        //MenuLayer layer = new MenuLayer();
         scene.addChild(layer);//给场景添加图层
         engine = SoundEngine.sharedEngine();
         engine.playSound(CCDirector.theApp, R.raw.faster,true);

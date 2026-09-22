@@ -2,15 +2,17 @@ package com.NingTianzhe181310419.plantsvszombies_wholeproject.engine;
 
 import android.view.MotionEvent;
 
-import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.Nut;
-import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.PrimaryZombie;
+import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.Plants.Nut;
+import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.Plants.PeaShooter;
+import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.Zombies.PrimaryZombie;
 import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.ShowPlant;
 import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.base.Plant;
 import com.NingTianzhe181310419.plantsvszombies_wholeproject.utils.CommonUtils;
+import com.NingTianzhe181310419.plantsvszombies_wholeproject.utils.Debug;
+import com.NingTianzhe181310419.plantsvszombies_wholeproject.utils.Locale;
 
 import org.cocos2d.actions.CCScheduler;
 import org.cocos2d.layers.CCTMXTiledMap;
-import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCSprite;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGRect;
@@ -26,6 +28,14 @@ public class GameEngine {
     CopyOnWriteArrayList<ShowPlant> mSelectedPlants;
     ArrayList<CGPoint>mZombiePoints;
     Plant mPlant;
+    private static ArrayList<FightLine> mFightLines;//战线集合
+    static {
+        mFightLines = new ArrayList<FightLine>();
+        for(int i=0;i<5;i++){
+            FightLine line = new FightLine(i);
+            mFightLines.add(line);
+        }
+    }
     public GameEngine(){
 
     }
@@ -65,6 +75,7 @@ public class GameEngine {
         CGPoint endPoint = mZombiePoints.get(line * 2 + 1);//随机抽取一行放僵尸获取终点坐标
         PrimaryZombie primaryZombie = new PrimaryZombie(startPoint, endPoint);
         map.addChild(primaryZombie);
+        mFightLines.get(line).addZombie(primaryZombie);//僵尸加入战线
     }
 
     private ShowPlant mShowPlant;//当前已选植物
@@ -81,9 +92,11 @@ public class GameEngine {
                     mShowPlant = showPlant;
                     showPlant.getShowPlant().setOpacity(100);//选择后变为半透明
                     switch (mShowPlant.getId()){
+                        case 0://豌豆射手
+                            mPlant = new PeaShooter();
+                            break;
                         case 3://坚果墙
                             mPlant = new Nut();
-
                             break;
                     }
                     break;
@@ -95,6 +108,7 @@ public class GameEngine {
                 if(mPlant!=null&&mShowPlant!=null){
                     map.addChild(mPlant);
                     mShowPlant.getShowPlant().setOpacity(255);
+                    mFightLines.get(mPlant.getLine()).addPlant(mPlant);//给战线添加植物
                     mPlant = null;
                     mShowPlant = null;
                 }
@@ -103,23 +117,19 @@ public class GameEngine {
     }
     //判断是否在草坪上并设置好植物位置
     public boolean isInGrass(CGPoint point){
-        int column = (int) point.x / 128;//点击的格子列数
-        int line = (int) (CCDirector.sharedDirector().winSize().height - point.y) / 128;//点击的格子行数
-        if(line >= 1 && line <= 5 && column >= 2 && column <= 9){
-            if(mPlant!=null){
-                mPlant.setLine(line - 1);
-                //mPlant.setColumn(column - 1);
-                if(column>=2&&column<=6){
-                    mPlant.setColumn(column - 2);
-                }
-                else{
-                    mPlant.setColumn(column - 1);
-                }
-                mPlant.setPosition(mPlantPoints[line - 1][column - 2]);
-                return true;
+        int column = Locale.localeColumn(point);//点击的格子列数
+        int line = Locale.localeLine(point);//点击的格子行数
+        if(mPlant!=null){
+            mPlant.setLine(line);
+            mPlant.setColumn(column);
+            mPlant.setPosition(mPlantPoints[line][column]);
+
+            map.addChild(Debug.debug(new String(line + "," + column)));
+            if(mFightLines.get(line).containsPlant(mPlant)){//判断战线上是否包含植物
+                //return false;//防止一个格子放了两个植物
             }
+            return true;
         }
         return false;
     }
-
 }

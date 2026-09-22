@@ -1,4 +1,4 @@
-package com.NingTianzhe181310419.plantsvszombies_wholeproject.domain;
+package com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.Plants;
 
 import com.NingTianzhe181310419.plantsvszombies_wholeproject.domain.base.DefancePlant;
 import com.NingTianzhe181310419.plantsvszombies_wholeproject.utils.CommonUtils;
@@ -13,7 +13,7 @@ public class Nut extends DefancePlant {
 
     @Override
     public void baseAction() {
-        CCAction animate = CommonUtils.animate("plant/WallNut/high/Frame%02d.png", 15, true);
+        CCAction animate = CommonUtils.animate("plant/WallNut/high/Frame%02d.png", 15, true,0.17f);
         this.runAction(animate);
     }
 }

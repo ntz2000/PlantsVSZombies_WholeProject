@@ -72,6 +72,7 @@ public class WelcomeLayer extends BaseLayer{
         if(CGRect.containsPoint(start.getBoundingBox(),convertTouchToNodeSpace)){//判断是否点击了开始按钮（还不够精确，待完善）
             CommonUtils.changeLayer(new MenuLayer());
         }
-        return super.ccTouchesBegan(event);
+        //return super.ccTouchesBegan(event);
+        return true;
     }
 }
